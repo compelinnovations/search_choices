@@ -212,8 +212,7 @@ class SearchChoices<T> extends FormField<T> {
   /// totalFilteredItemsNb, Function updateSearchPage) if [itemsPerPage] is set,
   /// customizes the display and the handling of the pagination on the search
   /// list.
-  final Widget Function(Widget listWidget, int totalFilteredItemsNb,
-      Function updateSearchPage)? customPaginationDisplay;
+  final Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)? customPaginationDisplay;
 
   /// [futureSearchFn] Future<int> Function(String keyword,
   /// List<DropdownMenuItem> itemsListToClearAndFill, int pageNb) used to
@@ -221,11 +220,7 @@ class SearchChoices<T> extends FormField<T> {
   /// set). Must return an [int] with the total number of results (allows the
   /// handling of pagination).
   final Future<Tuple2<List<DropdownMenuItem>, int>> Function(
-      String? keyword,
-      String? orderBy,
-      bool? orderAsc,
-      List<Tuple2<String, String>>? filters,
-      int? pageNb)? futureSearchFn;
+      String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb)? futureSearchFn;
 
   /// [futureSearchOrderOptions] [Map<String, Map<String,dynamic>>] when
   /// [futureSearchFn] is set, can be used to display search order options
@@ -269,8 +264,7 @@ class SearchChoices<T> extends FormField<T> {
 
   /// [fieldPresentationFn] [Function] returning a Widget to customize the
   /// display of the field.
-  final Widget Function(Widget fieldWidget, {bool selectionIsValid})?
-      fieldPresentationFn;
+  final Widget Function(Widget fieldWidget, {bool selectionIsValid})? fieldPresentationFn;
 
   /// [fieldDecoration] [Decoration] is the decoration of the SearchChoices
   /// Widget while displaying the hints or the selected values.
@@ -301,6 +295,10 @@ class SearchChoices<T> extends FormField<T> {
 
   /// [restorationId] as in FormField.
   final String? restorationId;
+
+  final BorderRadius? borderRadius;
+
+  final Color? fillColor;
 
   /// [giveMeThePop] [Function] to pass the pop function so that the menu or
   /// dialog can be closed from outside the widget.
@@ -383,8 +381,7 @@ class SearchChoices<T> extends FormField<T> {
     required bool thumbVisibility,
     required Widget emptyListWidget,
     required void Function(int index, T value, bool itemSelected) itemTapped,
-    required Widget Function(DropdownMenuItem item, bool isItemSelected)
-        displayItem,
+    required Widget Function(DropdownMenuItem item, bool isItemSelected) displayItem,
   })? searchResultDisplayFn;
 
   /// Search choices Widget with a single choice that opens a dialog or a menu
@@ -535,6 +532,8 @@ class SearchChoices<T> extends FormField<T> {
     this.icon = const Icon(Icons.arrow_drop_down),
     this.underline,
     this.doneButton,
+    this.fillColor,
+    this.borderRadius,
     this.label,
     this.closeButton = "Close",
     this.displayClearIcon = true,
@@ -595,8 +594,7 @@ class SearchChoices<T> extends FormField<T> {
           onSaved: onSaved,
           validator: validator,
           initialValue: value,
-          enabled: (items?.isNotEmpty ?? false || futureSearchFn != null) &&
-              (onChanged != null || onChanged is Function),
+          enabled: (items?.isNotEmpty ?? false || futureSearchFn != null) && (onChanged != null || onChanged is Function),
           autovalidateMode: autovalidateMode,
           restorationId: restorationId,
         ) {
@@ -761,6 +759,8 @@ class SearchChoices<T> extends FormField<T> {
     this.iconSize = 24.0,
     this.isExpanded = false,
     this.isCaseSensitiveSearch = false,
+    this.fillColor,
+    this.borderRadius,
     this.searchFn,
     this.onClear,
     this.selectedValueWidgetFn,
@@ -812,8 +812,7 @@ class SearchChoices<T> extends FormField<T> {
           onSaved: onSaved,
           validator: validator,
           initialValue: null,
-          enabled: (items?.isNotEmpty ?? false || futureSearchFn != null) &&
-              (onChanged != null || onChanged is Function),
+          enabled: (items?.isNotEmpty ?? false || futureSearchFn != null) && (onChanged != null || onChanged is Function),
           autovalidateMode: autovalidateMode,
           restorationId: restorationId,
         ) {
@@ -823,50 +822,32 @@ class SearchChoices<T> extends FormField<T> {
   checkPreconditions() {
     assert(!multipleSelection || doneButton != null);
     assert(menuConstraints == null || !dialogBox);
-    assert(itemsPerPage == null || currentPage != null,
-        "currentPage must be given if itemsPerPage is given");
-    assert(
-        dropDownDialogPadding == null || buildDropDownDialog == null,
-        "buildDropDownDialog and dropDownDialogPadding cannot be set at" +
-            " the same time");
-    assert(dialogBox || dropDownDialogPadding == null,
-        "dropDownDialogPadding must be null if dialogBox == false");
-    assert(
-        futureSearchOrderOptions == null || futureSearchFn != null,
-        "futureSearchOrderOptions is of no use if futureSearchFn is not " +
-            "set");
-    assert(
-        futureSearchFilterOptions == null || futureSearchFn != null,
-        "futureSearchFilterOptions is of no use if futureSearchFn is not " +
-            "set");
-    assert(futureSearchFn == null || searchFn == null,
-        "futureSearchFn and searchFn cannot work together");
-    assert((futureSearchFn == null) != (items == null),
-        "must either have futureSearchFn or items but not both");
+    assert(itemsPerPage == null || currentPage != null, "currentPage must be given if itemsPerPage is given");
+    assert(dropDownDialogPadding == null || buildDropDownDialog == null,
+        "buildDropDownDialog and dropDownDialogPadding cannot be set at" + " the same time");
+    assert(dialogBox || dropDownDialogPadding == null, "dropDownDialogPadding must be null if dialogBox == false");
+    assert(futureSearchOrderOptions == null || futureSearchFn != null,
+        "futureSearchOrderOptions is of no use if futureSearchFn is not " + "set");
+    assert(futureSearchFilterOptions == null || futureSearchFn != null,
+        "futureSearchFilterOptions is of no use if futureSearchFn is not " + "set");
+    assert(futureSearchFn == null || searchFn == null, "futureSearchFn and searchFn cannot work together");
+    assert((futureSearchFn == null) != (items == null), "must either have futureSearchFn or items but not both");
     assert(
         futureSearchFn == null ||
-            (multipleSelection
-                ? (futureSelectedValues != null && value == null)
-                : (true && futureSelectedValues == null)),
+            (multipleSelection ? (futureSelectedValues != null && value == null) : (true && futureSelectedValues == null)),
         "${multipleSelection ? "futureSelectedValues" : "value"} must be " +
             "set if futureSearchFn is set in " +
             "${multipleSelection ? "multiple" : "single"} selection mode " +
             "while " +
             "${multipleSelection ? "value" : "futureSelectedValues"} " +
             "must not be set");
-    assert(fieldDecoration == null || underline == null,
-        "use either underline or fieldDecoration");
-    assert(fieldPresentationFn == null || underline == null,
-        "use either underline or fieldPresentationFn");
-    assert(fieldPresentationFn == null || padding == null,
-        "use either padding or fieldPresentationFn");
-    assert(dialogBox || showDialogFn == null,
-        "use showDialogFn only with dialogBox");
+    assert(fieldDecoration == null || underline == null, "use either underline or fieldDecoration");
+    assert(fieldPresentationFn == null || underline == null, "use either underline or fieldPresentationFn");
+    assert(fieldPresentationFn == null || padding == null, "use either padding or fieldPresentationFn");
+    assert(dialogBox || showDialogFn == null, "use showDialogFn only with dialogBox");
   }
 
-  bool get isEnabled =>
-      (items?.isNotEmpty ?? false || futureSearchFn != null) &&
-      (onChanged != null || onChanged is Function);
+  bool get isEnabled => (items?.isNotEmpty ?? false || futureSearchFn != null) && (onChanged != null || onChanged is Function);
 
   @override
   _SearchChoicesState<T> createState() => _SearchChoicesState<T>();
@@ -884,9 +865,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
   @override
   SearchChoices<T> get widget => super.widget as SearchChoices<T>;
 
-  bool get rightToLeft =>
-      widget.rightToLeft ??
-      Directionality.maybeOf(context) == TextDirection.rtl;
+  bool get rightToLeft => widget.rightToLeft ?? Directionality.maybeOf(context) == TextDirection.rtl;
 
   void giveMeThePop(Function pop) {
     this.pop = pop;
@@ -899,10 +878,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
       widget.style ??
       (_enabled && !(widget.readOnly)
           ? Theme.of(context).textTheme.titleMedium
-          : Theme.of(context)
-              .textTheme
-              .titleMedium!
-              .copyWith(color: _disabledIconColor)) ??
+          : Theme.of(context).textTheme.titleMedium!.copyWith(color: _disabledIconColor)) ??
       TextStyle();
   bool get _enabled => widget.isEnabled;
 
@@ -932,9 +908,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
 
   Color? get _iconColor {
     // These colors are not defined in the Material Design spec.
-    return (_enabled && !(widget.readOnly)
-        ? _enabledIconColor
-        : _disabledIconColor);
+    return (_enabled && !(widget.readOnly) ? _enabledIconColor : _disabledIconColor);
   }
 
   bool get valid {
@@ -998,8 +972,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
       }
       if (updatedSelectedItems == null) updatedSelectedItems = [];
     }
-    selectedItems?.retainWhere((element) =>
-        updatedSelectedItems?.any((selected) => selected == element) ?? false);
+    selectedItems?.retainWhere((element) => updatedSelectedItems?.any((selected) => selected == element) ?? false);
     updatedSelectedItems.forEach((selected) {
       if (!(selectedItems?.any((element) => selected == element) ?? true)) {
         selectedItems?.add(selected);
@@ -1016,8 +989,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
       if (!(sel is NotGiven)) {
         updatedFutureSelectedValues = sel as List<T>;
       } else {
-        updatedFutureSelectedValues =
-            List<T>.from(widget.futureSelectedValues!);
+        updatedFutureSelectedValues = List<T>.from(widget.futureSelectedValues!);
       }
     } else {
       T? val = !(sel is NotGiven) ? sel as T : widget.value;
@@ -1026,9 +998,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
       }
       if (updatedFutureSelectedValues == null) updatedFutureSelectedValues = [];
     }
-    futureSelectedValues.retainWhere((element) =>
-        updatedFutureSelectedValues?.any((selected) => selected == element) ??
-        false);
+    futureSelectedValues.retainWhere((element) => updatedFutureSelectedValues?.any((selected) => selected == element) ?? false);
     updatedFutureSelectedValues.forEach((selected) {
       if (!(futureSelectedValues.any((element) => selected == element))) {
         futureSelectedValues.add(selected);
@@ -1037,8 +1007,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
   }
 
   int? indexFromValue(T value) {
-    assert(widget.futureSearchFn == null,
-        "got a futureSearchFn with a call to indexFromValue");
+    assert(widget.futureSearchFn == null, "got a futureSearchFn with a call to indexFromValue");
     return (widget.items!.indexWhere((item) {
       return (item.value == value);
     }));
@@ -1055,8 +1024,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
         } else {
           // We should try to make this work in multiple selection as well
           // see https://github.com/lcuis/search_choices/issues/97
-          debugPrint(
-              "Warning: SearchChoices multipleSelection doesn't fully support Form didChange call.");
+          debugPrint("Warning: SearchChoices multipleSelection doesn't fully support Form didChange call.");
         }
       }
     }
@@ -1072,8 +1040,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
           try {
             widget.onChanged!(selection, onChangeContext, pop);
           } catch (e) {
-            debugPrint(
-                "Warning: Unexpected arguments passed while running sendSelection in search_choices.");
+            debugPrint("Warning: Unexpected arguments passed while running sendSelection in search_choices.");
           }
         }
       }
@@ -1132,8 +1099,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
   }
 
   Widget menuWidget({String searchTerms = ""}) {
-    return StatefulBuilder(
-        builder: (BuildContext menuContext, StateSetter setStateFromBuilder) {
+    return StatefulBuilder(builder: (BuildContext menuContext, StateSetter setStateFromBuilder) {
       return (DropdownDialog(
         items: widget.items,
         hint: prepareWidget(widget.searchHint),
@@ -1155,9 +1121,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
         iconDisabledColor: widget.iconDisabledColor,
         callOnPop: () {
           giveMeThePop(() {});
-          if (!widget.dialogBox &&
-              widget.onChanged != null &&
-              selectedResult != null) {
+          if (!widget.dialogBox && widget.onChanged != null && selectedResult != null) {
             sendSelection(selectedResult, menuContext);
           }
           setState(() {});
@@ -1192,8 +1156,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
     });
   }
 
-  Future<void> showDialogOrMenu(String searchTerms,
-      {bool closeMenu = false}) async {
+  Future<void> showDialogOrMenu(String searchTerms, {bool closeMenu = false}) async {
     if (widget.dialogBox) {
       if (widget.showDialogFn != null) {
         await widget.showDialogFn!(
@@ -1228,20 +1191,13 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
     if (widget.setOpenDialog != null) {
       widget.setOpenDialog!(showDialogOrMenu);
     }
-    final List<Widget> items =
-        _enabled ? List<Widget>.from(widget.items ?? []) : <Widget>[];
+    final List<Widget> items = _enabled ? List<Widget>.from(widget.items ?? []) : <Widget>[];
     int? hintIndex;
-    if (widget.hint != null ||
-        (!_enabled &&
-            prepareWidget(widget.disabledHint,
-                    parameter: updateParentWithOptionalPop) !=
-                null)) {
+    if (widget.hint != null || (!_enabled && prepareWidget(widget.disabledHint, parameter: updateParentWithOptionalPop) != null)) {
       final Widget? positionedHint = DropdownMenuItem<T>(
         child: (_enabled
                 ? prepareWidget(widget.hint)
-                : prepareWidget(widget.disabledHint,
-                        parameter: updateParentWithOptionalPop) ??
-                    prepareWidget(widget.hint)) ??
+                : prepareWidget(widget.disabledHint, parameter: updateParentWithOptionalPop) ?? prepareWidget(widget.hint)) ??
             SizedBox.shrink(),
       );
       hintIndex = items.length;
@@ -1259,9 +1215,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
     if (widget.futureSearchFn == null) {
       selectedItems?.forEach((item) {
         if (!(item is NotGiven)) {
-          list.add(widget.selectedValueWidgetFn != null
-              ? widget.selectedValueWidgetFn!(widget.items![item].value)
-              : items[item]);
+          list.add(widget.selectedValueWidgetFn != null ? widget.selectedValueWidgetFn!(widget.items![item].value) : items[item]);
         }
       });
     } else {
@@ -1275,8 +1229,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
         }
       });
     }
-    if ((list.isEmpty && hintIndex != null) ||
-        (list.length == 1 && list.first is NotGiven)) {
+    if ((list.isEmpty && hintIndex != null) || (list.length == 1 && list.first is NotGiven)) {
       innerItemsWidget = items[hintIndex ?? 0];
     } else {
       innerItemsWidget = widget.selectedAggregateWidgetFn != null
@@ -1285,45 +1238,40 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
               children: list,
             );
     }
-    final EdgeInsetsGeometry padding = ButtonTheme.of(context).alignedDropdown
-        ? kAlignedButtonPadding
-        : kUnalignedButtonPadding;
-    Widget? clickable = !_enabled &&
-            prepareWidget(widget.disabledHint,
-                    parameter: updateParentWithOptionalPop) !=
-                null
-        ? prepareWidget(widget.disabledHint,
-            parameter: updateParentWithOptionalPop)
-        : InkWell(
-            key: Key("clickableResultPlaceHolder"),
-            //this key is used for running automated tests
-            onTap: widget.readOnly || !_enabled
-                ? null
-                : () async {
-                    if (widget.onTap != null) {
-                      widget.onTap!();
-                    }
-                    await showDialogOrMenu("",
-                        closeMenu: !widget.dialogBox && displayMenu.value);
-                  },
-            child: Row(
-              textDirection:
-                  rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-              children: <Widget>[
-                widget.isExpanded
-                    ? Expanded(child: innerItemsWidget)
-                    : innerItemsWidget,
-                IconTheme(
-                  data: IconThemeData(
-                    color: _iconColor,
-                    size: widget.iconSize,
-                  ),
-                  child:
-                      prepareWidget(widget.icon, parameter: selectedResult) ??
-                          SizedBox.shrink(),
-                ),
-              ],
-            ));
+    final EdgeInsetsGeometry padding = ButtonTheme.of(context).alignedDropdown ? kAlignedButtonPadding : kUnalignedButtonPadding;
+    Widget? clickable = !_enabled && prepareWidget(widget.disabledHint, parameter: updateParentWithOptionalPop) != null
+        ? prepareWidget(widget.disabledHint, parameter: updateParentWithOptionalPop)
+        : ClipRRect(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+            child: Material(
+              color: widget.fillColor ?? Theme.of(context).cardColor,
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+              child: InkWell(
+                  key: Key("clickableResultPlaceHolder"),
+                  //this key is used for running automated tests
+                  onTap: widget.readOnly || !_enabled
+                      ? null
+                      : () async {
+                          if (widget.onTap != null) {
+                            widget.onTap!();
+                          }
+                          await showDialogOrMenu("", closeMenu: !widget.dialogBox && displayMenu.value);
+                        },
+                  child: Row(
+                    textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+                    children: <Widget>[
+                      widget.isExpanded ? Expanded(child: innerItemsWidget) : innerItemsWidget,
+                      IconTheme(
+                        data: IconThemeData(
+                          color: _iconColor,
+                          size: widget.iconSize,
+                        ),
+                        child: prepareWidget(widget.icon, parameter: selectedResult) ?? SizedBox.shrink(),
+                      ),
+                    ],
+                  )),
+            ),
+          );
 
     DefaultTextStyle result = DefaultTextStyle(
       style: _textStyle,
@@ -1334,9 +1282,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            widget.isExpanded
-                ? Expanded(child: clickable ?? SizedBox.shrink())
-                : clickable ?? SizedBox.shrink(),
+            widget.isExpanded ? Expanded(child: clickable ?? SizedBox.shrink()) : clickable ?? SizedBox.shrink(),
             !widget.displayClearIcon
                 ? SizedBox()
                 : InkWell(
@@ -1348,17 +1294,13 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
                     child: Container(
                       padding: padding.resolve(Directionality.of(context)),
                       child: Row(
-                        textDirection:
-                            rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+                        textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           IconTheme(
                             data: IconThemeData(
-                              color:
-                                  hasSelection && _enabled && !widget.readOnly
-                                      ? _enabledIconColor
-                                      : _disabledIconColor,
+                              color: hasSelection && _enabled && !widget.readOnly ? _enabledIconColor : _disabledIconColor,
                               size: widget.iconSize,
                             ),
                             child: widget.clearIcon,
@@ -1374,18 +1316,14 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
 
     final double bottom = 8.0;
     String? validatorOutput = validResult;
-    Widget? labelOutput = prepareWidget(widget.label, parameter: selectedResult,
-        stringToWidgetFunction: (string) {
+    Widget? labelOutput = prepareWidget(widget.label, parameter: selectedResult, stringToWidgetFunction: (string) {
       return (Text(string,
-          textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-          style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
+          textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr, style: TextStyle(color: Colors.blueAccent, fontSize: 13)));
     });
     Widget? fieldPresentation;
     EdgeInsets treatedPadding = widget.padding is EdgeInsets
         ? widget.padding
-        : EdgeInsets.all(widget.padding is int
-            ? widget.padding.toDouble()
-            : widget.padding ?? 10.0);
+        : EdgeInsets.all(widget.padding is int ? widget.padding.toDouble() : widget.padding ?? 10.0);
     if (widget.fieldPresentationFn != null) {
       fieldPresentation = widget.fieldPresentationFn!(
         result,
@@ -1412,16 +1350,11 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
                   left: 0.0,
                   right: 0.0,
                   bottom: bottom,
-                  child: prepareWidget(widget.underline,
-                          parameter: selectedResult) ??
+                  child: prepareWidget(widget.underline, parameter: selectedResult) ??
                       Container(
                         height: 1.0,
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                                    color:
-                                        valid ? Color(0xFFBDBDBD) : Colors.red,
-                                    width: 0.0))),
+                        decoration:
+                            BoxDecoration(border: Border(bottom: BorderSide(color: valid ? Color(0xFFBDBDBD) : Colors.red, width: 0.0))),
                       ),
                 ),
         ],
@@ -1436,8 +1369,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
             ? SizedBox.shrink()
             : Text(
                 validatorOutput,
-                textDirection:
-                    rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
                 style: TextStyle(color: Colors.red, fontSize: 13),
               )),
         displayMenu.value ? menuWidget() : SizedBox.shrink(),
