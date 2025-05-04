@@ -77,6 +77,9 @@ class SearchChoices<T> extends FormField<T> {
   /// [iconSize] for the icons next to the selected value (icon and clearIcon).
   final double iconSize;
 
+  /// [itemsPadding] [EdgeInsets] to be used for the items.
+  final EdgeInsets? itemsPadding;
+
   /// [isExpanded] can be necessary to avoid pixel overflows (zebra symptom).
   final bool isExpanded;
 
@@ -527,6 +530,7 @@ class SearchChoices<T> extends FormField<T> {
     this.value,
     this.style,
     this.searchHint,
+    this.itemsPadding,
     this.hint,
     this.disabledHint,
     this.icon = const Icon(Icons.arrow_drop_down),
@@ -746,6 +750,7 @@ class SearchChoices<T> extends FormField<T> {
     this.style,
     this.searchHint,
     this.hint,
+    this.itemsPadding,
     this.disabledHint,
     this.icon = const Icon(Icons.arrow_drop_down),
     this.underline,
@@ -1257,18 +1262,21 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
                           }
                           await showDialogOrMenu("", closeMenu: !widget.dialogBox && displayMenu.value);
                         },
-                  child: Row(
-                    textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-                    children: <Widget>[
-                      widget.isExpanded ? Expanded(child: innerItemsWidget) : innerItemsWidget,
-                      IconTheme(
-                        data: IconThemeData(
-                          color: _iconColor,
-                          size: widget.iconSize,
+                  child: Padding(
+                    padding: widget.itemsPadding ?? const EdgeInsets.only(left: 16.0, right: 8.0),
+                    child: Row(
+                      textDirection: rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+                      children: <Widget>[
+                        widget.isExpanded ? Expanded(child: innerItemsWidget) : innerItemsWidget,
+                        IconTheme(
+                          data: IconThemeData(
+                            color: _iconColor,
+                            size: widget.iconSize,
+                          ),
+                          child: prepareWidget(widget.icon, parameter: selectedResult) ?? SizedBox.shrink(),
                         ),
-                        child: prepareWidget(widget.icon, parameter: selectedResult) ?? SizedBox.shrink(),
-                      ),
-                    ],
+                      ],
+                    ),
                   )),
             ),
           );

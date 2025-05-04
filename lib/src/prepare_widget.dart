@@ -13,10 +13,7 @@ import 'package:flutter/material.dart';
 /// * [context]
 /// * [updateParent]
 Widget? prepareWidget(dynamic object,
-    {dynamic parameter = const NotGiven(),
-    Function? updateParent,
-    BuildContext? context,
-    Function? stringToWidgetFunction}) {
+    {dynamic parameter = const NotGiven(), Function? updateParent, BuildContext? context, Function? stringToWidgetFunction}) {
   if (object == null) {
     return (null);
   }
@@ -41,18 +38,14 @@ Widget? prepareWidget(dynamic object,
         objectResult = NotGiven();
       }
     }
-    if (objectResult is NotGiven &&
-        !(parameter is NotGiven) &&
-        context != null) {
+    if (objectResult is NotGiven && !(parameter is NotGiven) && context != null) {
       try {
         objectResult = object(parameter, context);
       } on NoSuchMethodError {
         objectResult = NotGiven();
       }
     }
-    if (objectResult is NotGiven &&
-        !(parameter is NotGiven) &&
-        updateParent != null) {
+    if (objectResult is NotGiven && !(parameter is NotGiven) && updateParent != null) {
       try {
         objectResult = object(parameter, updateParent);
       } on NoSuchMethodError {
@@ -97,8 +90,7 @@ Widget? prepareWidget(dynamic object,
         );
       }
     }
-    return (prepareWidget(objectResult,
-        stringToWidgetFunction: stringToWidgetFunction));
+    return (prepareWidget(objectResult, stringToWidgetFunction: stringToWidgetFunction));
   }
   return (Text(
     "Unknown type: ${object.runtimeType.toString()}",

@@ -106,8 +106,7 @@ class MyAppState extends State<MyApp> {
   final _formKeyForValidator = GlobalKey<FormState>();
   String inputString = "";
   TextFormField? input;
-  List<DropdownMenuItem<ExampleNumber>> numberItems =
-      ExampleNumber.list.map((exNum) {
+  List<DropdownMenuItem<ExampleNumber>> numberItems = ExampleNumber.list.map((exNum) {
     return (DropdownMenuItem(value: exNum, child: Text(exNum.numberString)));
   }).toList();
   List<int> selectedItemsMultiSelect3Menu = [];
@@ -136,12 +135,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     String wordPair = "";
-    loremIpsum
-        .toLowerCase()
-        .replaceAll(",", "")
-        .replaceAll(".", "")
-        .split(" ")
-        .forEach((word) {
+    loremIpsum.toLowerCase().replaceAll(",", "").replaceAll(".", "").split(" ").forEach((word) {
       if (wordPair.isEmpty) {
         wordPair = "$word ";
       } else {
@@ -160,9 +154,7 @@ class MyAppState extends State<MyApp> {
     });
     input = TextFormField(
       validator: (value) {
-        return ((value?.length ?? 0) < 6
-            ? "must be at least 6 characters long"
-            : null);
+        return ((value?.length ?? 0) < 6 ? "must be at least 6 characters long" : null);
       },
       initialValue: inputString,
       onChanged: (value) {
@@ -269,6 +261,8 @@ class MyAppState extends State<MyApp> {
       "Single dialog": SearchChoices.single(
         items: items,
         value: selectedValueSingleDialog,
+        displayClearIcon: false,
+        padding: const EdgeInsets.only(right: 0),
         hint: "Select one",
         searchHint: "Select one",
         onChanged: (value) {
@@ -390,12 +384,7 @@ class MyAppState extends State<MyApp> {
             keyword.split(" ").forEach((k) {
               int i = 0;
               items.forEach((item) {
-                if (!ret.contains(i) &&
-                    k.isNotEmpty &&
-                    (item.value
-                        .toString()
-                        .toLowerCase()
-                        .contains(k.toLowerCase()))) {
+                if (!ret.contains(i) && k.isNotEmpty && (item.value.toString().toLowerCase().contains(k.toLowerCase()))) {
                   ret.add(i);
                 }
                 i++;
@@ -412,9 +401,7 @@ class MyAppState extends State<MyApp> {
         label: "Label for multi",
         underline: Container(
           height: 1.0,
-          decoration: const BoxDecoration(
-              border:
-                  Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
+          decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.teal, width: 3.0))),
         ),
         iconDisabledColor: Colors.brown,
         iconEnabledColor: Colors.indigo,
@@ -508,8 +495,7 @@ class MyAppState extends State<MyApp> {
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
-                          Iterable<int>.generate(items.length).toList());
+                      selectedItemsClose.addAll(Iterable<int>.generate(items.length).toList());
                     });
                     updateParent(selectedItemsClose);
                   },
@@ -548,8 +534,7 @@ class MyAppState extends State<MyApp> {
                   onPressed: () {
                     setState(() {
                       selectedItemsClose.clear();
-                      selectedItemsClose.addAll(
-                          Iterable<int>.generate(items.length).toList());
+                      selectedItemsClose.addAll(Iterable<int>.generate(items.length).toList());
                     });
                     updateParent(selectedItemsClose);
                   },
@@ -667,20 +652,14 @@ class MyAppState extends State<MyApp> {
             child: const Text("No choice, click to add one"),
           ));
         },
-        closeButton:
-            (String? value, BuildContext closeContext, Function updateParent) {
+        closeButton: (String? value, BuildContext closeContext, Function updateParent) {
           return (editableItems.length >= 100
               ? "Close"
               : TextButton(
                   onPressed: () {
                     addItemDialog().then((value) async {
-                      if (value != null &&
-                          editableItems.indexWhere(
-                                  (element) => element.value == value) !=
-                              -1) {
-                        Navigator.pop(
-                            MyApp.navKey.currentState?.overlay?.context ??
-                                context);
+                      if (value != null && editableItems.indexWhere((element) => element.value == value) != -1) {
+                        Navigator.pop(MyApp.navKey.currentState?.overlay?.context ?? context);
                         updateParent(value);
                       }
                     });
@@ -742,17 +721,13 @@ class MyAppState extends State<MyApp> {
             child: const Text("No choice, click to add one"),
           ));
         },
-        closeButton:
-            (String? value, BuildContext closeContext, Function updateParent) {
+        closeButton: (String? value, BuildContext closeContext, Function updateParent) {
           return (editableItems.length >= 100
               ? "Close"
               : TextButton(
                   onPressed: () {
                     addItemDialog().then((value) async {
-                      if (value != null &&
-                          editableItems.indexWhere(
-                                  (element) => element.value == value) !=
-                              -1) {
+                      if (value != null && editableItems.indexWhere((element) => element.value == value) != -1) {
                         updateParent(value, true);
                       }
                     });
@@ -826,21 +801,17 @@ class MyAppState extends State<MyApp> {
             child: const Text("No choice, click to add one"),
           ));
         },
-        closeButton: (List<int> values, BuildContext closeContext,
-            Function updateParent) {
+        closeButton: (List<int> values, BuildContext closeContext, Function updateParent) {
           return (editableItems.length >= 100
               ? "Close"
               : TextButton(
                   onPressed: () {
                     addItemDialog().then((value) async {
                       if (value != null) {
-                        int itemIndex = editableItems
-                            .indexWhere((element) => element.value == value);
+                        int itemIndex = editableItems.indexWhere((element) => element.value == value);
                         if (itemIndex != -1) {
                           editableSelectedItems.add(itemIndex);
-                          Navigator.pop(
-                              MyApp.navKey.currentState?.overlay?.context ??
-                                  context);
+                          Navigator.pop(MyApp.navKey.currentState?.overlay?.context ?? context);
                           updateParent(editableSelectedItems);
                         }
                       }
@@ -879,8 +850,7 @@ class MyAppState extends State<MyApp> {
               onPressed: () {
                 int indexOfItem = editableItems.indexOf(item);
                 editableItems.removeWhere((element) => item == element);
-                editableSelectedItems
-                    .removeWhere((element) => element == indexOfItem);
+                editableSelectedItems.removeWhere((element) => element == indexOfItem);
                 for (int i = 0; i < editableSelectedItems.length; i++) {
                   if (editableSelectedItems[i] > indexOfItem) {
                     editableSelectedItems[i]--;
@@ -917,12 +887,10 @@ class MyAppState extends State<MyApp> {
             "Select one",
             style: TextStyle(color: Colors.white),
           ),
-          style: const TextStyle(
-              color: Colors.white, backgroundColor: Colors.black),
+          style: const TextStyle(color: Colors.white, backgroundColor: Colors.black),
           closeButton: TextButton(
             onPressed: () {
-              Navigator.pop(
-                  MyApp.navKey.currentState?.overlay?.context ?? context);
+              Navigator.pop(MyApp.navKey.currentState?.overlay?.context ?? context);
             },
             child: const Text(
               "Close",
@@ -1003,8 +971,7 @@ class MyAppState extends State<MyApp> {
         ),
         closeButton: TextButton(
           onPressed: () {
-            Navigator.pop(
-                MyApp.navKey.currentState?.overlay?.context ?? context);
+            Navigator.pop(MyApp.navKey.currentState?.overlay?.context ?? context);
           },
           child: const SizedBox(
             width: 50,
@@ -1118,8 +1085,7 @@ class MyAppState extends State<MyApp> {
           return (Container(
             margin: const EdgeInsets.all(15.0),
             padding: const EdgeInsets.all(3.0),
-            decoration:
-                BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+            decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
             child: Text(
               item,
               overflow: TextOverflow.ellipsis,
@@ -1182,8 +1148,7 @@ class MyAppState extends State<MyApp> {
             child: Card(
               margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 35, horizontal: 45),
+                padding: const EdgeInsets.symmetric(vertical: 35, horizontal: 45),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1283,8 +1248,7 @@ class MyAppState extends State<MyApp> {
         ),
         closeButton: TextButton(
           onPressed: () {
-            Navigator.pop(
-                MyApp.navKey.currentState?.overlay?.context ?? context);
+            Navigator.pop(MyApp.navKey.currentState?.overlay?.context ?? context);
           },
           child: const SizedBox(
             width: 50,
@@ -1352,8 +1316,7 @@ class MyAppState extends State<MyApp> {
         isExpanded: true,
         itemsPerPage: 5,
         currentPage: currentPage,
-        customPaginationDisplay: (Widget listWidget, int totalFilteredItemsNb,
-            Function updateSearchPage) {
+        customPaginationDisplay: (Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage) {
           return (Expanded(
               child: Column(children: [
             listWidget,
@@ -1366,10 +1329,7 @@ class MyAppState extends State<MyApp> {
                 ),
                 Wrap(
                   spacing: 10,
-                  children:
-                      Iterable<int>.generate((totalFilteredItemsNb / 5).ceil())
-                          .toList()
-                          .map((i) {
+                  children: Iterable<int>.generate((totalFilteredItemsNb / 5).ceil()).toList().map((i) {
                     return (SizedBox(
                       width: (31 + 9 * (i + 1).toString().length) + 0.0,
                       height: 30.0,
@@ -1436,8 +1396,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -1468,8 +1427,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -1487,14 +1445,12 @@ class MyAppState extends State<MyApp> {
             "asc": true
           },
           "capital": {
-            "icon": Wrap(
-                children: const [Icon(Icons.location_city), Text("Capital")]),
+            "icon": Wrap(children: const [Icon(Icons.location_city), Text("Capital")]),
             "asc": true
           },
           "continent": const {"icon": "Continent", "asc": true},
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "asc": false
           },
         },
@@ -1512,33 +1468,23 @@ class MyAppState extends State<MyApp> {
             ]
           },
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "exclusive": true,
             "values": [
               {
-                "lt,1000":
-                    Wrap(children: const [Icon(Icons.person), Text("<1,000")])
+                "lt,1000": Wrap(children: const [Icon(Icons.person), Text("<1,000")])
               },
               {
-                "lt,100000": Wrap(
-                    children: const [Icon(Icons.person_add), Text("<100,000")])
+                "lt,100000": Wrap(children: const [Icon(Icons.person_add), Text("<100,000")])
               },
               {
-                "lt,1000000": Wrap(children: const [
-                  Icon(Icons.nature_people),
-                  Text("<1,000,000")
-                ])
+                "lt,1000000": Wrap(children: const [Icon(Icons.nature_people), Text("<1,000,000")])
               },
               {
-                "gt,1000000": Wrap(
-                    children: const [Icon(Icons.people), Text(">1,000,000")])
+                "gt,1000000": Wrap(children: const [Icon(Icons.people), Text(">1,000,000")])
               },
               {
-                "gt,10000000": Wrap(children: const [
-                  Icon(Icons.location_city),
-                  Text(">10,000,000")
-                ])
+                "gt,10000000": Wrap(children: const [Icon(Icons.location_city), Text(">10,000,000")])
               },
             ]
           },
@@ -1595,8 +1541,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -1627,8 +1572,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(12),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -1646,14 +1590,12 @@ class MyAppState extends State<MyApp> {
             "asc": true
           },
           "capital": {
-            "icon": Wrap(
-                children: const [Icon(Icons.location_city), Text("Capital")]),
+            "icon": Wrap(children: const [Icon(Icons.location_city), Text("Capital")]),
             "asc": true
           },
           "continent": const {"icon": "Continent", "asc": true},
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "asc": false
           },
         },
@@ -1671,33 +1613,23 @@ class MyAppState extends State<MyApp> {
             ]
           },
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "exclusive": true,
             "values": [
               {
-                "lt,1000":
-                    Wrap(children: const [Icon(Icons.person), Text("<1,000")])
+                "lt,1000": Wrap(children: const [Icon(Icons.person), Text("<1,000")])
               },
               {
-                "lt,100000": Wrap(
-                    children: const [Icon(Icons.person_add), Text("<100,000")])
+                "lt,100000": Wrap(children: const [Icon(Icons.person_add), Text("<100,000")])
               },
               {
-                "lt,1000000": Wrap(children: const [
-                  Icon(Icons.nature_people),
-                  Text("<1,000,000")
-                ])
+                "lt,1000000": Wrap(children: const [Icon(Icons.nature_people), Text("<1,000,000")])
               },
               {
-                "gt,1000000": Wrap(
-                    children: const [Icon(Icons.people), Text(">1,000,000")])
+                "gt,1000000": Wrap(children: const [Icon(Icons.people), Text(">1,000,000")])
               },
               {
-                "gt,10000000": Wrap(children: const [
-                  Icon(Icons.location_city),
-                  Text(">10,000,000")
-                ])
+                "gt,10000000": Wrap(children: const [Icon(Icons.location_city), Text(">10,000,000")])
               },
             ]
           },
@@ -1715,8 +1647,7 @@ class MyAppState extends State<MyApp> {
           });
         },
         isExpanded: true,
-        emptyListWidget: (String keyword) =>
-            "No result with the \"$keyword\" keyword",
+        emptyListWidget: (String keyword) => "No result with the \"$keyword\" keyword",
       ),
       "Single dialog future custom empty list": SearchChoices.single(
         value: selectedValueSingleDialogFuture,
@@ -1746,8 +1677,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -1779,8 +1709,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -1843,8 +1772,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -1875,8 +1803,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -1894,14 +1821,12 @@ class MyAppState extends State<MyApp> {
             "asc": true
           },
           "capital": {
-            "icon": Wrap(
-                children: const [Icon(Icons.location_city), Text("Capital")]),
+            "icon": Wrap(children: const [Icon(Icons.location_city), Text("Capital")]),
             "asc": true
           },
           "continent": const {"icon": "Continent", "asc": true},
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "asc": false
           },
         },
@@ -1919,33 +1844,23 @@ class MyAppState extends State<MyApp> {
             ]
           },
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "exclusive": true,
             "values": [
               {
-                "lt,1000":
-                    Wrap(children: const [Icon(Icons.person), Text("<1,000")])
+                "lt,1000": Wrap(children: const [Icon(Icons.person), Text("<1,000")])
               },
               {
-                "lt,100000": Wrap(
-                    children: const [Icon(Icons.person_add), Text("<100,000")])
+                "lt,100000": Wrap(children: const [Icon(Icons.person_add), Text("<100,000")])
               },
               {
-                "lt,1000000": Wrap(children: const [
-                  Icon(Icons.nature_people),
-                  Text("<1,000,000")
-                ])
+                "lt,1000000": Wrap(children: const [Icon(Icons.nature_people), Text("<1,000,000")])
               },
               {
-                "gt,1000000": Wrap(
-                    children: const [Icon(Icons.people), Text(">1,000,000")])
+                "gt,1000000": Wrap(children: const [Icon(Icons.people), Text(">1,000,000")])
               },
               {
-                "gt,10000000": Wrap(children: const [
-                  Icon(Icons.location_city),
-                  Text(">10,000,000")
-                ])
+                "gt,10000000": Wrap(children: const [Icon(Icons.location_city), Text(">10,000,000")])
               },
             ]
           },
@@ -1979,8 +1894,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -2012,8 +1926,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -2077,8 +1990,7 @@ class MyAppState extends State<MyApp> {
                     child: Text(item["capital"]),
                   ))));
         },
-        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc,
-            List<Tuple2<String, String>>? filters, int? pageNb) async {
+        futureSearchFn: (String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb) async {
           String filtersString = "";
           int i = 1;
           filters?.forEach((element) {
@@ -2109,8 +2021,7 @@ class MyAppState extends State<MyApp> {
                       margin: const EdgeInsets.all(10),
                       child: Padding(
                         padding: const EdgeInsets.all(6),
-                        child: Text(
-                            "${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
+                        child: Text("${item["capital"]} - ${item["country"]} - ${item["continent"]} - pop.: ${item["population"]}"),
                       ),
                     ),
                   ))
@@ -2128,14 +2039,12 @@ class MyAppState extends State<MyApp> {
             "asc": true
           },
           "capital": {
-            "icon": Wrap(
-                children: const [Icon(Icons.location_city), Text("Capital")]),
+            "icon": Wrap(children: const [Icon(Icons.location_city), Text("Capital")]),
             "asc": true
           },
           "continent": const {"icon": "Continent", "asc": true},
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "asc": false
           },
         },
@@ -2153,33 +2062,23 @@ class MyAppState extends State<MyApp> {
             ]
           },
           "population": {
-            "icon":
-                Wrap(children: const [Icon(Icons.people), Text("Population")]),
+            "icon": Wrap(children: const [Icon(Icons.people), Text("Population")]),
             "exclusive": true,
             "values": [
               {
-                "lt,1000":
-                    Wrap(children: const [Icon(Icons.person), Text("<1,000")])
+                "lt,1000": Wrap(children: const [Icon(Icons.person), Text("<1,000")])
               },
               {
-                "lt,100000": Wrap(
-                    children: const [Icon(Icons.person_add), Text("<100,000")])
+                "lt,100000": Wrap(children: const [Icon(Icons.person_add), Text("<100,000")])
               },
               {
-                "lt,1000000": Wrap(children: const [
-                  Icon(Icons.nature_people),
-                  Text("<1,000,000")
-                ])
+                "lt,1000000": Wrap(children: const [Icon(Icons.nature_people), Text("<1,000,000")])
               },
               {
-                "gt,1000000": Wrap(
-                    children: const [Icon(Icons.people), Text(">1,000,000")])
+                "gt,1000000": Wrap(children: const [Icon(Icons.people), Text(">1,000,000")])
               },
               {
-                "gt,10000000": Wrap(children: const [
-                  Icon(Icons.location_city),
-                  Text(">10,000,000")
-                ])
+                "gt,10000000": Wrap(children: const [Icon(Icons.location_city), Text(">10,000,000")])
               },
             ],
           },
@@ -2242,8 +2141,7 @@ class MyAppState extends State<MyApp> {
                                                       ? Icons.filter_8
                                                       : nbFilters == 9
                                                           ? Icons.filter_9
-                                                          : Icons
-                                                              .filter_9_plus_sharp,
+                                                          : Icons.filter_9_plus_sharp,
                   size: 17,
                 ),
                 onPressed: () {
@@ -2270,9 +2168,7 @@ class MyAppState extends State<MyApp> {
                   )
                 : ElevatedButton.icon(
                     label: Icon(
-                      orderAsc ?? true
-                          ? Icons.arrow_upward
-                          : Icons.arrow_downward,
+                      orderAsc ?? true ? Icons.arrow_upward : Icons.arrow_downward,
                       size: 17,
                     ),
                     icon: icon,
@@ -2290,10 +2186,8 @@ class MyAppState extends State<MyApp> {
           required ScrollController scrollController,
           required bool thumbVisibility,
           required Widget emptyListWidget,
-          required void Function(int index, dynamic value, bool itemSelected)
-              itemTapped,
-          required Widget Function(DropdownMenuItem item, bool isItemSelected)
-              displayItem,
+          required void Function(int index, dynamic value, bool itemSelected) itemTapped,
+          required Widget Function(DropdownMenuItem item, bool isItemSelected) displayItem,
         }) {
           return Expanded(
             child: Scrollbar(
@@ -2455,8 +2349,7 @@ class MyAppState extends State<MyApp> {
                 ? SizedBox.shrink()
                 : Text(formResult ?? "",
                     style: TextStyle(
-                      color:
-                          formResult == "All good" ? Colors.black : Colors.red,
+                      color: formResult == "All good" ? Colors.black : Colors.red,
                     )),
           ],
         ),
@@ -2466,10 +2359,7 @@ class MyAppState extends State<MyApp> {
 
     List<Widget> exampleWidgets = [];
     int? exampleId = int.tryParse(widgetSearchString);
-    if (widgetSearchString.isNotEmpty &&
-        exampleId != null &&
-        exampleId >= 0 &&
-        exampleId < widgets.length) {
+    if (widgetSearchString.isNotEmpty && exampleId != null && exampleId >= 0 && exampleId < widgets.length) {
       exampleWidgets = [
         widgetToExample(
           widgets.values.toList()[exampleId],
@@ -2518,9 +2408,7 @@ class MyAppState extends State<MyApp> {
                   actions: appBarActions,
                   bottom: TabBar(
                     isScrollable: true,
-                    tabs: Iterable<int>.generate(widgets.length)
-                        .toList()
-                        .map((i) {
+                    tabs: Iterable<int>.generate(widgets.length).toList().map((i) {
                       return (Tab(
                         text: (i + 1).toString(),
                       ));
@@ -2589,8 +2477,7 @@ class MyAppState extends State<MyApp> {
           Expanded(
             child: TextField(
               controller: widgetSearchController,
-              decoration:
-                  const InputDecoration(hintText: 'Search for an example'),
+              decoration: const InputDecoration(hintText: 'Search for an example'),
               onChanged: (value) {
                 setState(() {
                   widgetSearchString = value;
