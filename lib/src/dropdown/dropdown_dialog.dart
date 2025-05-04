@@ -93,6 +93,8 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final EdgeInsets? dropDownDialogPadding;
 
+  final EdgeInsets? dialogItemsDisplayPadding;
+
   /// See SearchChoices class.
   final InputDecoration? searchInputDecoration;
 
@@ -171,6 +173,7 @@ class DropdownDialog<T> extends StatefulWidget {
     this.closeButton,
     this.keyboardType,
     this.searchFn,
+    this.dialogItemsDisplayPadding,
     required this.multipleSelection,
     this.selectedItems,
     this.displayItem,
@@ -723,9 +726,12 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                         isItemSelected,
                       );
                     },
-                    child: displayItem(
-                      item,
-                      isItemSelected,
+                    child: Padding(
+                      padding: widget.dialogItemsDisplayPadding ?? const EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: displayItem(
+                        item,
+                        isItemSelected,
+                      ),
                     ),
                   );
                 },

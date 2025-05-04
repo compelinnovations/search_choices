@@ -18,6 +18,8 @@ class SearchChoices<T> extends FormField<T> {
 
   final EdgeInsets? dialogItemsPadding;
 
+  final EdgeInsets? dialogItemsDisplayPadding;
+
   /// [onChanged] [Function] with parameter: __value__ not returning executed
   /// after the selection is done.
   final Function? onChanged;
@@ -530,6 +532,7 @@ class SearchChoices<T> extends FormField<T> {
     this.items,
     this.onChanged,
     this.value,
+    this.dialogItemsDisplayPadding,
     this.style,
     this.searchHint,
     this.itemsPadding,
@@ -754,6 +757,7 @@ class SearchChoices<T> extends FormField<T> {
     this.dialogItemsPadding,
     this.searchHint,
     this.hint,
+    this.dialogItemsDisplayPadding,
     this.itemsPadding,
     this.disabledHint,
     this.icon = const Icon(Icons.arrow_drop_down),
@@ -1112,6 +1116,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
       return (DropdownDialog(
         items: widget.items,
         dialogItemsPadding: widget.dialogItemsPadding,
+        dialogItemsDisplayPadding: widget.dialogItemsDisplayPadding,
         hint: prepareWidget(widget.searchHint),
         isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
         closeButton: widget.closeButton,
