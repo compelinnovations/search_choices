@@ -48,6 +48,8 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final BoxConstraints? menuConstraints;
 
+  final EdgeInsets? dialogItemsPadding;
+
   /// Function to be called whenever the dialogBox is popped or the menu gets
   /// closed.
   final Function? callOnPop;
@@ -101,16 +103,11 @@ class DropdownDialog<T> extends StatefulWidget {
   final PointerThisPlease<int>? currentPage;
 
   /// See SearchChoices class.
-  final Widget Function(Widget listWidget, int totalFilteredItemsNb,
-      Function updateSearchPage)? customPaginationDisplay;
+  final Widget Function(Widget listWidget, int totalFilteredItemsNb, Function updateSearchPage)? customPaginationDisplay;
 
   /// See SearchChoices class.
   final Future<Tuple2<List<DropdownMenuItem>, int>> Function(
-      String? keyword,
-      String? orderBy,
-      bool? orderAsc,
-      List<Tuple2<String, String>>? filters,
-      int? pageNb)? futureSearchFn;
+      String? keyword, String? orderBy, bool? orderAsc, List<Tuple2<String, String>>? filters, int? pageNb)? futureSearchFn;
 
   /// See SearchChoices class.
   final Map<String, Map<String, dynamic>>? futureSearchOrderOptions;
@@ -162,13 +159,13 @@ class DropdownDialog<T> extends StatefulWidget {
     required bool thumbVisibility,
     required Widget emptyListWidget,
     required void Function(int index, T value, bool itemSelected) itemTapped,
-    required Widget Function(DropdownMenuItem item, bool isItemSelected)
-        displayItem,
+    required Widget Function(DropdownMenuItem item, bool isItemSelected) displayItem,
   })? searchResultDisplayFn;
 
   DropdownDialog({
     Key? key,
     this.items,
+    this.dialogItemsPadding,
     this.hint,
     this.isCaseSensitiveSearch = false,
     this.closeButton,
@@ -231,8 +228,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   PointerThisPlease<bool?> orderAsc = PointerThisPlease(null);
 
-  PointerThisPlease<List<Tuple2<String, String>>?> filters =
-      PointerThisPlease(null);
+  PointerThisPlease<List<Tuple2<String, String>>?> filters = PointerThisPlease(null);
 
   Future<Tuple2<List<DropdownMenuItem>, int>>? latestFutureResult;
   List<dynamic>? latestFutureSearchArgs;
@@ -289,10 +285,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
           };
         } else {
           matchFn = (item, keyword) {
-            return (item.value
-                .toString()
-                .toLowerCase()
-                .contains(keyword.toLowerCase()));
+            return (item.value.toString().toLowerCase().contains(keyword.toLowerCase()));
           };
         }
         searchFn = (keyword, items) {
@@ -363,17 +356,14 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       )));
     }
     return wrapMenuIfDialogBox(AnimatedContainer(
-      padding: widget.dropDownDialogPadding ??
-          MediaQuery.of(dropdownDialogContext).viewInsets,
+      padding: widget.dropDownDialogPadding ?? MediaQuery.of(dropdownDialogContext).viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Card(
         color: widget.menuBackgroundColor,
-        margin: EdgeInsets.symmetric(
-            vertical: widget.dialogBox ? 10 : 5,
-            horizontal: widget.dialogBox ? 10 : 4),
+        margin: EdgeInsets.symmetric(vertical: widget.dialogBox ? 10 : 5, horizontal: widget.dialogBox ? 10 : 4),
         child: Container(
           constraints: widget.menuConstraints,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+          padding: widget.dialogItemsPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -381,8 +371,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             children: <Widget>[
               TitleBar(
                 multipleSelection: widget.multipleSelection,
-                buildFutureFilterOrOrderButton:
-                    widget.buildFutureFilterOrOrderButton,
+                buildFutureFilterOrOrderButton: widget.buildFutureFilterOrOrderButton,
                 setState: setState,
                 currentPage: widget.currentPage,
                 dialogBox: widget.dialogBox,
@@ -446,8 +435,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     if ((widget.searchDelay ?? 0) > 0) {
       searchCount++;
       if (!immediate) {
-        Future.delayed(Duration(milliseconds: widget.searchDelay ?? 0))
-            .whenComplete(() {
+        Future.delayed(Duration(milliseconds: widget.searchDelay ?? 0)).whenComplete(() {
           if (searchCount == 1) {
             doSearch();
             setState(() {});
@@ -464,8 +452,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   }
 
   /// Refreshes the displayed list with the network search results.
-  Future<Tuple2<List<DropdownMenuItem>, int>>? _doFutureSearch(String? keyword,
-      {bool force = false}) {
+  Future<Tuple2<List<DropdownMenuItem>, int>>? _doFutureSearch(String? keyword, {bool force = false}) {
     bool filtersMatch = false;
     if (!force &&
         latestFutureSearchArgs != null &&
@@ -474,32 +461,25 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
             latestFutureSearchArgs![2] == (orderAsc.value ?? true) &&
             latestFutureSearchArgs![4] == (widget.currentPage?.value ?? 1))) {
       if ((filters.value == null || (filters.value?.isEmpty ?? true)) &&
-          (latestFutureSearchArgs![3] == null ||
-              (latestFutureSearchArgs![3] as List<Tuple2<String, String>>)
-                  .isEmpty)) {
+          (latestFutureSearchArgs![3] == null || (latestFutureSearchArgs![3] as List<Tuple2<String, String>>).isEmpty)) {
         filtersMatch = true;
       } else {
         filtersMatch = true;
-        List<dynamic> oldFiltersDyn =
-            (latestFutureSearchArgs![3] ?? []) as List<dynamic>;
+        List<dynamic> oldFiltersDyn = (latestFutureSearchArgs![3] ?? []) as List<dynamic>;
         List<Tuple2<String, String>> oldFilters = [];
         if (oldFiltersDyn.isNotEmpty) {
           oldFilters = oldFiltersDyn
-              .map<Tuple2<String, String>>((e) => Tuple2<String, String>(
-                  (e as Tuple2<String, String>).item1, (e).item2))
+              .map<Tuple2<String, String>>((e) => Tuple2<String, String>((e as Tuple2<String, String>).item1, (e).item2))
               .toList();
         }
         filters.value?.forEach((filter) {
-          if (!oldFilters.any((element) => (element.item1 == filter.item1 &&
-              element.item2 == filter.item2))) {
+          if (!oldFilters.any((element) => (element.item1 == filter.item1 && element.item2 == filter.item2))) {
             filtersMatch = false;
           }
         });
         if (filtersMatch) {
           oldFilters.forEach((filter) {
-            if (!filters.value!.any((element) =>
-                (element.item1 == filter.item1 &&
-                    element.item2 == filter.item2))) {
+            if (!filters.value!.any((element) => (element.item1 == filter.item1 && element.item2 == filter.item2))) {
               filtersMatch = false;
             }
           });
@@ -513,11 +493,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       String.fromCharCodes(keyword?.runes ?? []),
       String.fromCharCodes(orderBy.value?.runes ?? []),
       orderAsc.value ?? true ? true : false,
-      filters.value
-          ?.map((e) => Tuple2<String, String>(
-              String.fromCharCodes(e.item1.runes),
-              String.fromCharCodes(e.item2.runes)))
-          .toList(),
+      filters.value?.map((e) => Tuple2<String, String>(String.fromCharCodes(e.item1.runes), String.fromCharCodes(e.item2.runes))).toList(),
       widget.currentPage?.value ?? 1
     ];
     latestFutureResult = widget.futureSearchFn!(
@@ -536,8 +512,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       child: Stack(
         children: <Widget>[
           TextField(
-            textDirection:
-                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
             controller: txtSearch,
             decoration: widget.searchInputDecoration != null
                 ? widget.searchInputDecoration
@@ -620,8 +595,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   void deselectItem(int index, T value) {
     if (futureSearch) {
       if (value is Map) {
-        widget.futureSelectedValues
-            ?.removeWhere((element) => mapEquals(element, value));
+        widget.futureSelectedValues?.removeWhere((element) => mapEquals(element, value));
       } else {
         widget.futureSelectedValues?.remove(value);
       }
@@ -670,8 +644,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   bool isItemSelected(int index, T value) {
     if (futureSearch) {
       if (value is Map) {
-        return (widget.futureSelectedValues!
-            .any((element) => mapEquals(element, value)));
+        return (widget.futureSelectedValues!.any((element) => mapEquals(element, value)));
       }
       return (widget.futureSelectedValues!.contains(value));
     }
@@ -704,28 +677,22 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       return (displayItemResult!);
     }
     return widget.multipleSelection
-        ? (Row(
-            textDirection:
-                widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
-            children: [
-                Icon(
-                  isItemSelected
-                      ? Icons.check_box
-                      : Icons.check_box_outline_blank,
-                ),
-                SizedBox(
-                  width: 7,
-                ),
-                Flexible(child: item),
-              ]))
+        ? (Row(textDirection: widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr, children: [
+            Icon(
+              isItemSelected ? Icons.check_box : Icons.check_box_outline_blank,
+            ),
+            SizedBox(
+              width: 7,
+            ),
+            Flexible(child: item),
+          ]))
         : item;
   }
 
   /// Builds the list display from the given list of [DropdownMenuItem] along
   /// with the [bool] indicating whether the item is selected or not and the
   /// [int] as the index in the [selectedItems] list.
-  Widget listDisplay(
-      List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay) {
+  Widget listDisplay(List<Tuple3<int, DropdownMenuItem<dynamic>, bool>> itemsToDisplay) {
     if (widget.searchResultDisplayFn != null) {
       return widget.searchResultDisplayFn!(
         itemsToDisplay: itemsToDisplay,
@@ -777,8 +744,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   /// total number of items to be displayed once the filters are applied on all
   /// the pages.
   bool isLastPage(int totalNbItemsToPage) {
-    return (widget.currentPage!.value >=
-        (totalNbItemsToPage / widget.itemsPerPage!).ceil());
+    return (widget.currentPage!.value >= (totalNbItemsToPage / widget.itemsPerPage!).ceil());
   }
 
   /// Provides a button to go to previous page taking into account the RTL. The
@@ -823,11 +789,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
   /// search page through the given [updateSearchPage]. The [totalNbItemsToPage]
   /// argument is the total number of items to be displayed once the filters are
   /// applied on all the pages.
-  Widget paginatedResults(
-      Widget scrollBar, Function updateSearchPage, int totalNbItemsToPage) {
+  Widget paginatedResults(Widget scrollBar, Function updateSearchPage, int totalNbItemsToPage) {
     if (widget.customPaginationDisplay != null) {
-      return (widget.customPaginationDisplay!(
-          scrollBar, totalNbItemsToPage, updateSearchPage));
+      return (widget.customPaginationDisplay!(scrollBar, totalNbItemsToPage, updateSearchPage));
     }
 
     return (Expanded(
@@ -836,14 +800,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         height: 10,
       ),
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        widget.rightToLeft
-            ? nextPageButton(updateSearchPage, totalNbItemsToPage)
-            : previousPageButton(updateSearchPage),
-        Text("${widget.currentPage!.value}" +
-            "/${(totalNbItemsToPage / widget.itemsPerPage!).ceil()}"),
-        widget.rightToLeft
-            ? previousPageButton(updateSearchPage)
-            : nextPageButton(updateSearchPage, totalNbItemsToPage),
+        widget.rightToLeft ? nextPageButton(updateSearchPage, totalNbItemsToPage) : previousPageButton(updateSearchPage),
+        Text("${widget.currentPage!.value}" + "/${(totalNbItemsToPage / widget.itemsPerPage!).ceil()}"),
+        widget.rightToLeft ? previousPageButton(updateSearchPage) : nextPageButton(updateSearchPage, totalNbItemsToPage),
       ]),
       scrollBar,
     ])));
@@ -882,19 +841,15 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
     List<int> pagedShownIndexes = [];
     bool displayPages = true;
     if (!futureSearch) {
-      if (widget.itemsPerPage == null ||
-          widget.itemsPerPage! >= shownIndexes.length) {
+      if (widget.itemsPerPage == null || widget.itemsPerPage! >= shownIndexes.length) {
         pagedShownIndexes = shownIndexes;
         displayPages = false;
       } else {
-        if (widget.currentPage!.value < 1 ||
-            widget.currentPage!.value >
-                (shownIndexes.length / widget.itemsPerPage!).ceil()) {
+        if (widget.currentPage!.value < 1 || widget.currentPage!.value > (shownIndexes.length / widget.itemsPerPage!).ceil()) {
           widget.currentPage!.value = 1;
         }
         for (int i = widget.itemsPerPage! * (widget.currentPage!.value - 1);
-            i < widget.itemsPerPage! * (widget.currentPage!.value) &&
-                i < shownIndexes.length;
+            i < widget.itemsPerPage! * (widget.currentPage!.value) && i < shownIndexes.length;
             i++) {
           pagedShownIndexes.add(shownIndexes[i]);
         }
@@ -939,13 +894,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       }
       return (FutureBuilder(
         future: _doFutureSearch(latestKeyword),
-        builder: (context,
-            AsyncSnapshot<Tuple2<List<DropdownMenuItem>, int>> snapshot) {
+        builder: (context, AsyncSnapshot<Tuple2<List<DropdownMenuItem>, int>> snapshot) {
           if (snapshot.hasError) {
             return (errorRetryButton!);
           }
-          if (!snapshot.hasData ||
-              snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData || snapshot.connectionState == ConnectionState.waiting) {
             return (Column(children: [
               SizedBox(height: 15),
               Center(
@@ -972,15 +925,11 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                 )
               ])); //no results
             }
-            itemsToDisplay = data.item1
-                .map<Tuple3<int, DropdownMenuItem<dynamic>, bool>>(
-                    (DropdownMenuItem item) {
-              return (Tuple3<int, DropdownMenuItem<dynamic>, bool>(
-                  -1, item, isItemSelected(-1, item.value!)));
+            itemsToDisplay = data.item1.map<Tuple3<int, DropdownMenuItem<dynamic>, bool>>((DropdownMenuItem item) {
+              return (Tuple3<int, DropdownMenuItem<dynamic>, bool>(-1, item, isItemSelected(-1, item.value!)));
             }).toList();
             Widget scrollBar = listDisplay(itemsToDisplay);
-            if (widget.itemsPerPage == null ||
-                nbResults <= itemsToDisplay.length) {
+            if (widget.itemsPerPage == null || nbResults <= itemsToDisplay.length) {
               return (scrollBar);
             }
 
@@ -997,12 +946,9 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
       ));
     }
 
-    itemsToDisplay = pagedShownIndexes
-        .map<Tuple3<int, DropdownMenuItem<T>, bool>>((int index) {
+    itemsToDisplay = pagedShownIndexes.map<Tuple3<int, DropdownMenuItem<T>, bool>>((int index) {
       return (Tuple3<int, DropdownMenuItem<T>, bool>(
-          index,
-          widget.items![index] as DropdownMenuItem<T>,
-          isItemSelected(index, widget.items![index].value)));
+          index, widget.items![index] as DropdownMenuItem<T>, isItemSelected(index, widget.items![index].value)));
     }).toList();
     Widget scrollBar = listDisplay(itemsToDisplay);
 
@@ -1019,8 +965,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
 
   /// Returns the close button after the list of items or its replacement.
   Widget closeButtonWrapper() {
-    return (prepareWidget(widget.closeButton,
-            parameter: selectedResult, context: context, updateParent: (
+    return (prepareWidget(widget.closeButton, parameter: selectedResult, context: context, updateParent: (
           sel, [
           bool pop = false,
         ]) {
@@ -1029,8 +974,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         }, stringToWidgetFunction: (string) {
           return (Container(
             child: Row(
-              textDirection:
-                  widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
+              textDirection: widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -1039,13 +983,10 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
                     pop();
                   },
                   child: Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width / 2),
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
                       child: Text(
                         string,
-                        textDirection: widget.rightToLeft
-                            ? TextDirection.rtl
-                            : TextDirection.ltr,
+                        textDirection: widget.rightToLeft ? TextDirection.rtl : TextDirection.ltr,
                         style: defaultButtonStyle,
                         overflow: TextOverflow.ellipsis,
                       )),
