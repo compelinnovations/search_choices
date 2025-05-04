@@ -48,7 +48,7 @@ class DropdownDialog<T> extends StatefulWidget {
   /// See SearchChoices class.
   final BoxConstraints? menuConstraints;
 
-  final EdgeInsets? dialogItemsPadding;
+  final EdgeInsets? menuPadding;
 
   /// Function to be called whenever the dialogBox is popped or the menu gets
   /// closed.
@@ -167,7 +167,7 @@ class DropdownDialog<T> extends StatefulWidget {
   DropdownDialog({
     Key? key,
     this.items,
-    this.dialogItemsPadding,
+    this.menuPadding,
     this.hint,
     this.isCaseSensitiveSearch = false,
     this.closeButton,
@@ -366,7 +366,7 @@ class _DropdownDialogState<T> extends State<DropdownDialog> {
         margin: EdgeInsets.symmetric(vertical: widget.dialogBox ? 10 : 5, horizontal: widget.dialogBox ? 10 : 4),
         child: Container(
           constraints: widget.menuConstraints,
-          padding: widget.dialogItemsPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          padding: widget.menuPadding ?? EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,

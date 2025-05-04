@@ -16,7 +16,7 @@ class SearchChoices<T> extends FormField<T> {
   /// .toString() used to match search keyword.
   final List<DropdownMenuItem<T>>? items;
 
-  final EdgeInsets? dialogItemsPadding;
+  final EdgeInsets? menuPadding;
 
   final EdgeInsets? dialogItemsDisplayPadding;
 
@@ -537,7 +537,7 @@ class SearchChoices<T> extends FormField<T> {
     this.searchHint,
     this.itemsPadding,
     this.hint,
-    this.dialogItemsPadding,
+    this.menuPadding,
     this.disabledHint,
     this.icon = const Icon(Icons.arrow_drop_down),
     this.underline,
@@ -754,7 +754,7 @@ class SearchChoices<T> extends FormField<T> {
     this.onChanged,
     this.selectedItems = const [],
     this.style,
-    this.dialogItemsPadding,
+    this.menuPadding,
     this.searchHint,
     this.hint,
     this.dialogItemsDisplayPadding,
@@ -1115,7 +1115,7 @@ class _SearchChoicesState<T> extends FormFieldState<T> {
     return StatefulBuilder(builder: (BuildContext menuContext, StateSetter setStateFromBuilder) {
       return (DropdownDialog(
         items: widget.items,
-        dialogItemsPadding: widget.dialogItemsPadding,
+        menuPadding: widget.menuPadding,
         dialogItemsDisplayPadding: widget.dialogItemsDisplayPadding,
         hint: prepareWidget(widget.searchHint),
         isCaseSensitiveSearch: widget.isCaseSensitiveSearch,
